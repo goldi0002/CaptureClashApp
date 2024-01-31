@@ -1,0 +1,15 @@
+{
+  "background_color": "#FE9063",
+  "description": "Capture Clash.",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "assets/images/pwa150x150.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    }
+  ],
+  "name": "Capture Clash",
+  "short_name": "Capture Clash",
+  "start_url": "Home.html"
+}
