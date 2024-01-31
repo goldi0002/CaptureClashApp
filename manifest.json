@@ -4,7 +4,7 @@
   "display": "fullscreen",
   "icons": [
     {
-      "src": "assets/images/logo-color.png",
+      "src": "assets/images/logo-no-background.png",
       "sizes": "150x150",
       "type": "image/png"
     }
