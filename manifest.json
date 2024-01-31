@@ -4,7 +4,7 @@
   "display": "fullscreen",
   "icons": [
     {
-      "src": "assets/images/Safeimagekit-resized-img.png",
+      "src": "assets/images/logo-color.png",
       "sizes": "150x150",
       "type": "image/png"
     }
