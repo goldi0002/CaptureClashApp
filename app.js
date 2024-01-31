@@ -16,7 +16,7 @@
 const CACHE_NAME = 'capture-clash-chache-v1';
 const urlsToCache = [
   '/',
-  '/Home.html',
+  '/index.html',
   '/assests/css/style.css',
   '/index.js'
 ];

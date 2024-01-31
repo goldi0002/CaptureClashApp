@@ -1,7 +1,7 @@
 // Register Service worker to control making site work offline
 if ('serviceWorker' in navigator) {
 	navigator.serviceWorker
-	.register('Scripts/Web/ClashLibraries/app.js')
+	.register('app.js')
 	.then(() => { console.log('Service Worker Registered'); });
 }
 
