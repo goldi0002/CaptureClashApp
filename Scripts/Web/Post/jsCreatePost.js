@@ -87,7 +87,7 @@ const CreatePostFeatures={
                         _post_data,
                         (success)=>{
                               if(success){
-                                   window.location.href = "/Home.html";
+                                   window.location.href = "/index.html";
                               }else{
                                 $("#toastContent").html("Something went wrong..")
                                 toast.show();
@@ -163,7 +163,7 @@ function validateMedia() {
         var fileType = mediaInput.files[0].type;
         var fileSize = mediaInput.files[0].size; // in bytes
         var maxSizeVideo = 25 * 1024 * 1024; // 30 MB for videos
-        var maxSizeImage = 1 * 1024 * 1024; // 5 MB for images
+        var maxSizeImage = 25 * 1024 * 1024; // 5 MB for images
         var check_upload_document=true;
         if (fileType.startsWith('image/') && fileSize > maxSizeImage) {
             toast.show()
