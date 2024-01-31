@@ -139,10 +139,6 @@ const SESSION_KEYS = {
   IS_GUEST: {
     key: "isGuest",
     defaultValue: true,
-  },
-  USER_PROFILE_IMAGE:{
-    key:"user_profile_imageURL",
-    defaultValue:""
   }
 };
 const setSessionData = (key, value) => {
