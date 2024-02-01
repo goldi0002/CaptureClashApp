@@ -2,35 +2,16 @@
 const supabase_key =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0YmRocXdhZnZtaGF1Y3ZrZndhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDM5OTc0NzQsImV4cCI6MjAxOTU3MzQ3NH0.fuLEZWkK5vj9AJaClHEF3V-9wiAN7WbIJsXugKDUc18";
 const IMDB_key="2b593d40e6c26c525e32831dd6d4bee7";
-var Version = "1.0",
-  G_Crypto = (function (e) {
-    var n = new TextEncoder().encode("abcdefghijklmnopqrstuvwxyz012345$GAURAVROHIT");
-    return {
-      encrypt: function e(r) {
-        for (
-          var o = new TextEncoder().encode(r),
-            t = new Uint8Array(o.length),
-            a = 0;
-          a < o.length;
-          a++
-        )
-          t[a] = o[a] ^ n[a % n.length];
-        return btoa(String.fromCharCode(...t));
-      },
-      decrypt: function e(r) {
-        for (
-          var o = Uint8Array.from(atob(r), (e) => e.charCodeAt(0)),
-            t = new Uint8Array(o.length),
-            a = 0;
-          a < o.length;
-          a++
-        )
-          t[a] = o[a] ^ n[a % n.length];
-        return new TextDecoder().decode(t);
-      },
-      Version: Version,
-    };
-  })(jQuery);
+
+const Version = "1.0";
+const G_Crypto = (function (e) {
+  const key = new TextEncoder().encode("abcdefghijklmnopqrstuvwxyz012345$GAURAVROHIT");
+  return {
+    encrypt: (input) => btoa(String.fromCharCode(...new Uint8Array([...new TextEncoder().encode(input)].map((byte, index) => (byte + key[index % key.length]) % 256)))),
+    decrypt: (input) => new TextDecoder().decode(new Uint8Array([...Uint8Array.from(atob(input), (e) => e.charCodeAt(0))].map((byte, index) => (byte - key[index % key.length] + 256) % 256))),
+    Version: Version,
+  };
+})(jQuery);
 
   
 function getTimeDifference(e) {
@@ -139,6 +120,10 @@ const SESSION_KEYS = {
   IS_GUEST: {
     key: "isGuest",
     defaultValue: true,
+  },
+  USER_FL_NAME:{
+    key:"userFirstLastName",
+    defaultValue:null
   }
 };
 const setSessionData = (key, value) => {

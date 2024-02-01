@@ -11714,6 +11714,9 @@ section {
 [data-theme-color="color-deeporange"] .footer.transparent {
   background-color: #ffbd9d; }
 
+[data-theme-color="color-goldi"] .footer.transparent {
+    background-color: #ffd9e6; }
+  
 .menubar-area {
   position: fixed;
   bottom: 0;
@@ -11999,6 +12002,26 @@ section {
   --rgba-primary-7: rgba(255,107,34,0.7);
   --rgba-primary-8: rgba(255,107,34,0.8);
   --rgba-primary-9: rgba(255,107,34,0.9); }
+
+[data-theme-color="color-goldi"] {
+  --primary:#f2f2f2;/* Blush pink */
+  --primary-light: rgba(255, 217, 230, 0.80);
+  --primary-light-2: #ffb3cc;
+  --primary-hover: #ffccd2;
+  --primary-dark: #e693a3;
+  --gradient: linear-gradient(45deg, #ffc3a5 15%, #ff9f70 92%);
+  --gradient-bg: linear-gradient(169.71deg, #ffc3a5 0.8%, #9b4419 100.86%);
+  --gradient-bg-2: linear-gradient(169.71deg, #fff8f5 0.8%, #f3e2da 100.86%);
+  --rgba-primary-1: rgba(255, 217, 230, 0.1);
+  --rgba-primary-2: rgba(255, 217, 230, 0.2);
+  --rgba-primary-3: rgba(255, 217, 230, 0.3);
+  --rgba-primary-4: rgba(255, 217, 230, 0.4);
+  --rgba-primary-5: rgba(255, 217, 230, 0.5);
+  --rgba-primary-6: rgba(255, 217, 230, 0.6);
+  --rgba-primary-7: rgba(255, 217, 230, 0.7);
+  --rgba-primary-8: rgba(255, 217, 230, 0.8);
+  --rgba-primary-9: rgba(255, 217, 230, 0.9);
+}
 
 /* Theme Dark */
 .theme-dark {
@@ -12288,6 +12311,8 @@ section {
       background-color: #cddc39; }
     .theme-color-settings li input[value="color-deeporange"] + label {
       background-color: #dd4a01; }
+      .theme-color-settings li input[value="color-goldi"] + label {
+        background-color: #ffd9e6; }
 
 /*==== 5. Components ====*/
 .imageuploadify.well {
