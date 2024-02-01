@@ -1,8 +1,31 @@
 // Register Service worker to control making site work offline
-if ('serviceWorker' in navigator) {
-	navigator.serviceWorker
-	.register('app.js')
-	.then(() => { console.log('Service Worker Registered'); });
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('app.js')
+            .then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+
+                // Check if the user has granted permission for notifications
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        // The user has granted permission
+                        showNotification(registration);
+                    } else {
+                        console.warn('Notification permission not granted');
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
+    });
+}
+
+function showNotification(registration) {
+    registration.showNotification('Hello from your PWA!', {
+        body: 'This is a notification from your Capture Clash.',
+        icon: 'assets/images/logo-no-background.png',
+    });
 }
 
 // Code to handle install prompt on desktop
