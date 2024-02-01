@@ -55,12 +55,12 @@ const HomeScriptFeature={
                               var likeButton = $(this);
                               var likesCount = success[0].p_likes;
                                     if (likesCount > 0 && succ.trim().toLowerCase() === "deleted") {
-                                       likeButton.find('.fa-solid').removeClass('fa-solid').addClass('fa-regular');
+                                       likeButton.find('.fa-heart').removeClass('fa-solid').addClass('fa-regular');
                                     }else if(likesCount > 0 && succ.trim().toLowerCase() === "inserted") {
-                                       likeButton.find('.fa-regular').removeClass('fa-regular').addClass('fa-solid');
+                                       likeButton.find('.fa-heart').removeClass('fa-regular').addClass('fa-solid');
                                     }
-                                 $(this).find('h6').html(formatNumber(likesCount));
-                             }
+                                    $(this).find('h6').html(formatNumber(likesCount));
+                           }
                         },(error)=>{
                            console.error(error);
                         }
