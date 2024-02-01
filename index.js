@@ -10,6 +10,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
                     if (permission === 'granted') {
                         // The user has granted permission
                         showNotification(registration);
+						
                     } else {
                         console.warn('Notification permission not granted');
                     }
