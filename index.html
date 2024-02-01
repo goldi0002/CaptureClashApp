@@ -10,19 +10,17 @@
 	<meta name="author" content="DexignZone" /> 
     <meta name="keywords" content="" /> 
     <meta name="robots" content="" /> 
-	<meta name="description" content="Soziety - Social Network Mobile App Template ( Bootstrap 5 + PWA )"/>
-	<meta property="og:title" content="Soziety - Social Network Mobile App Template ( Bootstrap 5 + PWA )" />
-	<meta property="og:description" content="Soziety - Social Network Mobile App Template ( Bootstrap 5 + PWA )" />
+	<meta name="description" content="Capture Clash - Home"/>
+	<meta property="og:title" content="Capture Clash - Home" />
+	<meta property="og:description" content="Capture Clash - Home" />
 	<meta property="og:image" content="social-image.png"/>
 	<meta name="format-detection" content="telephone=no">
 	<!-- Favicons Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.png" />
-    
     <!-- Title -->
 	<title>Capture Clash - Home</title>
 	<!-- PWA Version -->
 	<link rel="manifest" href="/manifest.json">
-    
     <!-- Stylesheets -->
 	<link rel="stylesheet" href="/assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css">
 	<link rel="stylesheet" href="/assets/vendor/swiper/swiper-bundle.min.css">
@@ -42,14 +40,14 @@
 		<div class="spinner"></div>
 	</div>
     <!-- Preloader end-->
-    
-	
     <!-- Header -->
 	<header class="header">
 		<div class="container">
 			<div class="main-bar">
 				<div class="left-content">
-					<h4 class="title mb-0">Home</h4>
+					<h4 class="bell-icon me-2" style="cursor: pointer;">
+						<a class="bell-icon me-2" href="/index.html"><i class="fa-solid fa-home"></i></a>
+					</h4>
 				</div>
 				<div class="mid-content">
 				</div>
@@ -86,9 +84,7 @@
 			<div class="dz-media">
 				<img src="/assets/images/stories/small/pic1.jpg" alt="author-image">
 			</div>
-			<div class="dz-info">
-				<span>Good Morning</span>
-				<h5 class="name">Emilla</h5>
+			<div class="dz-info" id="sidebar-user-info">
 			</div>
 		</div>
 		<ul class="nav navbar-nav">	
@@ -140,7 +136,8 @@
 				<span>Chat</span>
 				<span class="badge badge-circle badge-info">5</span>
 			</a></li>
-			<li><a class="nav-link" href="/Auth/welcome.html">
+			<li>
+				<a class="nav-link" id="log-out-btn" href="javascript:void(0);">
 				<span class="dz-icon">
 					<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g></g><g><g><path d="M5,5h6c0.55,0,1-0.45,1-1v0c0-0.55-0.45-1-1-1H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h6c0.55,0,1-0.45,1-1v0 c0-0.55-0.45-1-1-1H5V5z"/><path d="M20.65,11.65l-2.79-2.79C17.54,8.54,17,8.76,17,9.21V11h-7c-0.55,0-1,0.45-1,1v0c0,0.55,0.45,1,1,1h7v1.79 c0,0.45,0.54,0.67,0.85,0.35l2.79-2.79C20.84,12.16,20.84,11.84,20.65,11.65z"/></g></g></svg>
 				</span>

@@ -4,7 +4,13 @@ var my_liked_post=[];
 var page_no_g=1;
 var page_lenth_g=30;
 var lastPostCardReached = false;
+var viewTrackerInitialized = false;
 $(document).ready(()=>{
+   if(getSessionData("USER_ID")!==null){
+      HomeScriptFeature.BindSidebarUserInfo(true);
+   }else{
+      HomeScriptFeature.BindSidebarUserInfo(false);
+   }
    HomeScriptFeature.getMyLikedPostIds();
    hideLoader();
    HomeScriptFeature.ClickEvents();
@@ -45,6 +51,8 @@ const HomeScriptFeature={
                        is_like: succ === "inserted" ? true : false,
                        p_post_id: parseInt(extractedNumber),
                        is_dislike: succ === "deleted" ? true : false,
+                       is_view:false,
+                       is_comment:false
                      };
                      ajaxRequest(
                         supabase_url() +"/update_post_counts",
@@ -72,6 +80,11 @@ const HomeScriptFeature={
               )
             }
          });
+         $(document).on('click','#log-out-btn',function(e){
+            e.preventDefault();
+            clearAllSessionData();
+            window.location.href="/Auth/welcome.html";
+         });
       },
       getMyLikedPostIds:()=>{
          ajaxRequest(
@@ -88,6 +101,24 @@ const HomeScriptFeature={
                console.error(error);
             }
          )
+      },
+      BindSidebarUserInfo:(isTrew)=>{
+         var _user_info_html=""
+         if(isTrew){
+            _user_info_html +=`
+            <span>${getGreeting()}</span>
+            <h5 class="name">${getSessionData("USER_FL_NAME")}</h5>
+            `;
+         }else{
+            _user_info_html +=`
+            <span>${getGreeting()}</span>
+            <h5 class="name">Hey! Guest</h5>
+            `;
+         }
+         $("#sidebar-user-info").html(_user_info_html);
+      },
+      getDeviceType:()=> {
+         return /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile/.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
       },
       CheckPostIsLikes: (post_id) => {
          return my_liked_post.includes(post_id);
@@ -116,7 +147,7 @@ const HomeScriptFeature={
             //  page_lenth_g = page_lenth_g + 10;
              $.each(post_data,function(index,item){
                   post_html += `
-                  <div class="post-card" id="post-card-${item.post_id}">
+                  <div class="post-card post-view-cls" data-post-index="${index}" data-post-id="post-card-${item.post_id}">
 						<div class="top-meta">
 							<div class="d-flex justify-content-between align-items-start">
 								<a href="/Profile/user-profile.html" class="media media-40">
@@ -169,13 +200,18 @@ const HomeScriptFeature={
                            <li>
 										<a href="javascript:void(0);" class="action-btn bg-success">
 											<span><i class="fa-solid fa-eye fill-icon"></i></span>
-											<h6 class="font-14 mb-0 ms-2">${formatNumber(item.view_count!=null ? item.view_count : 0)}</h6>
+											<h6 class="font-14 mb-0 ms-2" data-logged-user-id="${getSessionData("USER_ID")}"
+                                 data-p-ip-logged-user-address="${
+                                    window.localStorage.getItem("ipAddress")
+                                 }" data-logged-user-device-type="${
+                                    HomeScriptFeature.getDeviceType()
+                                 }" data-logged-user-browser-information="${getBrowserInfo()}" id="post-views-count-${index}">${formatNumber(item.view_count!=null ? item.view_count : 0)}</h6>
 										</a>
 									</li>
                            <li style="display:none;">
 										<a href="javascript:void(0);" class="action-btn bg-secondary">
 											<span style="color:blue;"><h6 class="font-14 mb-0">Vote</h6></span>
-											<h6 class="font-14 mb-0 ms-2">${formatNumber(item.vote_count!=null ? item.vote_count : 0)}</h6>
+											<h6 class="font-14 mb-0 ms-2" >${formatNumber(item.vote_count!=null ? item.vote_count : 0)}</h6>
 										</a>
 									</li>
 								</ul>
@@ -192,5 +228,14 @@ const HomeScriptFeature={
             $("#post_loader").hide()
             $("#no-post-available-text").show();
          }
+         $(window).scroll(function(){
+            if (!viewTrackerInitialized) {
+                $('.post-view-cls').viewTracker({
+                    apiUrl: supabase_url() + "/save_clash_post_view",
+                    viewElem:'#post-views-count-'
+                });
+                viewTrackerInitialized = true;
+            }
+        });
       }
 }
