@@ -236,6 +236,6 @@ const HomeScriptFeature={
                 });
                 viewTrackerInitialized = true;
             }
-        });
+         });
       }
 }
