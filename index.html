@@ -428,8 +428,21 @@
 								</ul>
 							</div>
 						</div>
+						
 					</div> -->
 				</div>
+				<div id="post_loader" style="display: none;">
+					<div style="display: flex;  justify-content: center; align-items: center;" >
+						<div class="spinner-border spinner-md me-2 mb-2 text-secondary" role="status">
+							<span class="sr-only">Loading...</span>
+						</div>
+					</div>
+				</div>
+				<div id="no-post-available-text" style="display: none;">
+					<div style="display: flex; justify-content: center; font-size: large;">
+						<span style="color: #2196F3;">The best is yet to come!</span>
+					</div>
+				</div>							
 			</div>    
 		</div>
     </div>    
@@ -651,13 +664,18 @@
 					<label for="primary_color_12"></label>
                     <span>Deeporange</span>
                 </li>
+				<li>
+                    <input class="filled-in" id="primary_color_13" name="theme_color" type="radio" value="color-goldi" />
+					<label for="primary_color_13"></label>
+                    <span>Blush Pink</span>
+                </li>
             </ul>
         </div>
     </div>
 	<!-- Theme Color Settings End -->
 
 	<!-- PWA Offcanvas -->
-	<div class="offcanvas offcanvas-bottom pwa-offcanvas">
+	<div class="offcanvas offcanvas-bottom pwa-offcanvas" style="display: none;">
 		<div class="container">
 			<div class="offcanvas-body small">
 				<img class="logo" src="/assets/images/icon.png" alt="">

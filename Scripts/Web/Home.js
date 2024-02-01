@@ -1,19 +1,39 @@
 'use strict'
+var lastPostCard;
 var my_liked_post=[];
+var page_no_g=1;
+var page_lenth_g=30;
+var lastPostCardReached = false;
 $(document).ready(()=>{
    HomeScriptFeature.getMyLikedPostIds();
    hideLoader();
    HomeScriptFeature.ClickEvents();
+   function onLastPostCardReached() {
+       if (!lastPostCardReached) {
+         //   HomeScriptFeature.getAllpostsFromServer(page_no_g + 2, page_lenth_g);
+       }
+   }
+   
+   $(window).scroll(function () {
+       var lastPostCardBottom = lastPostCard.position().top + lastPostCard.outerHeight(true);
+       if ($(window).scrollTop() + $(window).height() >= lastPostCardBottom) {
+           onLastPostCardReached();
+       }
+   });   
 });
 const HomeScriptFeature={
       ClickEvents:()=>{
          $(document).on('click','[id^="like-post-"]',function(e){
+            if(getSessionData("USER_ID")==null){
+                e.preventDefault();
+                return;
+            }
             var numericPart = this.id.match(/-(\d+)$/);
             if (numericPart) {
               var extractedNumber = numericPart[1];
               var _like_data={
                   p_post_id:parseInt(extractedNumber),
-                  p_user_id:4
+                  p_user_id: parseInt(getSessionData("USER_ID"))
               }
               ajaxRequest(
                supabase_url() +"/save_or_update_like",
@@ -34,13 +54,13 @@ const HomeScriptFeature={
                              if(success){
                               var likeButton = $(this);
                               var likesCount = success[0].p_likes;
-                                    if (likesCount > 0 && succ==="deleted") {
-                                       likeButton.find('.fa-solid').removeClass('fa-solid').addClass('fa-regular');
-                                    }else if(likesCount > 0 && succ==="inserted") {
-                                       likeButton.find('.fa-regular').removeClass('fa-regular').addClass('fa-solid');
+                                    if (likesCount > 0 && succ.trim().toLowerCase() === "deleted") {
+                                       likeButton.find('.fa-heart').removeClass('fa-solid').addClass('fa-regular');
+                                    }else if(likesCount > 0 && succ.trim().toLowerCase() === "inserted") {
+                                       likeButton.find('.fa-heart').removeClass('fa-regular').addClass('fa-solid');
                                     }
-                                 $(this).find('h6').html(formatNumber(likesCount));
-                             }
+                                    $(this).find('h6').html(formatNumber(likesCount));
+                           }
                         },(error)=>{
                            console.error(error);
                         }
@@ -57,11 +77,12 @@ const HomeScriptFeature={
          ajaxRequest(
             supabase_url() +"/get_liked_post_ids",
             "POST",
-            {"p_user_id":4},
+            {"p_user_id":parseInt(getSessionData("USER_ID"))},
             (success)=>{
                if(success){
                   my_liked_post=success;
-                  HomeScriptFeature.getAllpostsFromServer(0, 10);
+                  HomeScriptFeature.getAllpostsFromServer(page_no_g, page_lenth_g);
+                  hideLoader();
                }
             },(error)=>{
                console.error(error);
@@ -91,6 +112,8 @@ const HomeScriptFeature={
       BindPostHtml:(post_data)=>{
          if(typeof post_data !== "undefined" && Array.isArray(post_data) && post_data.length>0){
              let post_html="";
+            //  page_no_g = post_data.length + 10;
+            //  page_lenth_g = page_lenth_g + 10;
              $.each(post_data,function(index,item){
                   post_html += `
                   <div class="post-card" id="post-card-${item.post_id}">
@@ -138,9 +161,21 @@ const HomeScriptFeature={
 										</a>
 									</li>
 									<li>
-										<a href="/Community/comment.html" class="action-btn bg-secondary">
+										<a href="/Community/comment.html?cmt=${G_Crypto.encrypt("cm="+item.post_id)}" class="action-btn bg-secondary" id="comment-post-${item.post_id}">
 											<span><i class="fa-solid fa-comment fill-icon"></i></span>
 											<h6 class="font-14 mb-0 ms-2">${formatNumber(item.comments)}</h6>
+										</a>
+									</li>
+                           <li>
+										<a href="javascript:void(0);" class="action-btn bg-success">
+											<span><i class="fa-solid fa-eye fill-icon"></i></span>
+											<h6 class="font-14 mb-0 ms-2">${formatNumber(item.view_count!=null ? item.view_count : 0)}</h6>
+										</a>
+									</li>
+                           <li style="display:none;">
+										<a href="javascript:void(0);" class="action-btn bg-secondary">
+											<span style="color:blue;"><h6 class="font-14 mb-0">Vote</h6></span>
+											<h6 class="font-14 mb-0 ms-2">${formatNumber(item.vote_count!=null ? item.vote_count : 0)}</h6>
 										</a>
 									</li>
 								</ul>
@@ -149,10 +184,13 @@ const HomeScriptFeature={
 					</div>
                   `;
              });
-             $("#post-area-section").html(post_html);
+             $("#post-area-section").append(post_html);
+             $("#post_loader").show();
+             lastPostCard = $(".post-card:last");
          }else{
-
+            lastPostCardReached = true; 
+            $("#post_loader").hide()
+            $("#no-post-available-text").show();
          }
-         
       }
 }
