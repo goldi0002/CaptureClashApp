@@ -60,7 +60,8 @@
     {
       "name": "Capture a Moment",
       "description": "Quickly capture and share your memorable moments.",
-      "url": "/capture"
+      "url": "/Posts/create-post.html",
+      "intent": "openCamera"
     },
     {
       "name": "Explore",
@@ -71,6 +72,22 @@
       "name": "Profile",
       "description": "Access your profile and manage your captures.",
       "url": "/Profile/profile.html"
+    }
+  ],
+  "intents": [
+    {
+      "name": "openCamera",
+      "description": "Open the camera to capture a moment.",
+      "actions": [
+        {
+          "type": "OPEN_CAMERA",
+          "cameraType": "rear",
+          "resolution": "high",
+          "flashMode": "auto",
+          "captureMode": "photo",
+          "focusMode": "auto"
+        }
+      ]
     }
   ],
   "web_app_manifest": {
@@ -90,5 +107,27 @@
   "permissions": [
     "camera",
     "geolocation"
-  ]
+  ],
+  "features": {
+    "share_target": {
+      "action": "/share",
+      "method": "GET",
+      "enctype": "application/x-www-form-urlencoded"
+    },
+    "background_sync": true,
+    "storage": ["camera", "location", "contacts"],
+    "notifications": {
+      "vibrate": [200, 100, 200],
+      "actions": [
+        {
+          "action": "like",
+          "title": "Like"
+        },
+        {
+          "action": "comment",
+          "title": "Comment"
+        }
+      ]
+    }
+  }
 }
