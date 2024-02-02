@@ -112,7 +112,7 @@
 						</div>
 					</div>
 					<a href="/Auth/UsersCred/register.html" class="btn btn-primary btn-block mb-3">CREATE ACCOUNT</a>
-					<a href="/Auth/UsersCred/login.html" class="btn btn-light btn-block mb-3">SIGN IN</a>
+					<a href="#" id="UserLoginStart" class="btn btn-light btn-block mb-3">SIGN IN</a>
 					<a href="/Auth/UsersCred/forgot-password.html" class="text-light text-center d-block">Forgot your account?</a>
 				</div>
 			</div>
@@ -142,6 +142,10 @@
       mobile:       false       // trigger animations on mobile devices (true is default)
     });
     wow.init();	
+	$(document).on('click','#UserLoginStart',function(){
+		 window.localStorage.setItem("userId","G")
+		window.location.href="/Auth/UsersCred/login.html";
+	})
 </script>
 </body>
 
