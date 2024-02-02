@@ -229,14 +229,16 @@ const HomeScriptFeature={
             $("#post_loader").hide()
             $("#no-post-available-text").show();
          }
-         $(window).scroll(function(){
-            if (!viewTrackerInitialized) {
-                $('.post-view-cls').viewTracker({
-                    apiUrl: supabase_url() + "/save_clash_post_view",
-                    viewElem:'#post-views-count-'
-                });
-                viewTrackerInitialized = true;
-            }
-         });
+         if(getSessionData("USER_ID")!==null){
+            $(window).scroll(function(){
+               if (!viewTrackerInitialized) {
+                   $('.post-view-cls').viewTracker({
+                       apiUrl: supabase_url() + "/save_clash_post_view",
+                       viewElem:'#post-views-count-'
+                   });
+                   viewTrackerInitialized = true;
+               }
+            });
+         }
       }
 }
