@@ -9,6 +9,7 @@ $(document).ready(()=>{
    if(getSessionData("USER_ID")!==null){
       HomeScriptFeature.BindSidebarUserInfo(true);
    }else{
+      window.location.href="/Auth/UsersCred/welcome.html";
       HomeScriptFeature.BindSidebarUserInfo(false);
    }
    HomeScriptFeature.getMyLikedPostIds();
