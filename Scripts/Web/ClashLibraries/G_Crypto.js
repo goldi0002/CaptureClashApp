@@ -152,6 +152,9 @@ const clearAllSessionData = () => {
   });
   setDefaultValues();
 };
+if(getSessionData("USER_ID")==null){
+  window.location.href="/Auth/welcome.html"
+};
 const setDefaultValues = () => {
   Object.keys(SESSION_KEYS).forEach((key) => {
       const sessionKey = SESSION_KEYS[key];
