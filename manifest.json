@@ -7,9 +7,88 @@
       "src": "assets/images/logo-no-background.png",
       "sizes": "150x150",
       "type": "image/png"
+    },
+    {
+      "src": "assets/images/logo-no-background-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/images/logo-no-background_512x512_image.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "name": "Capture Clash",
   "short_name": "Capture Clash",
-  "start_url": "index.html"
+  "start_url": "index.html",
+  "keywords": [
+    "capture",
+    "clash",
+    "photos",
+    "moments",
+    "social",
+    "media",
+    "sharing",
+    "community",
+    "photography",
+    "photo sharing",
+    "image sharing",
+    "photo community",
+    "visual storytelling",
+    "capture memories",
+    "social network",
+    "digital memories",
+    "creative expression",
+    "photo app",
+    "photo platform",
+    "photo enthusiasts",
+    "photo sharing community",
+    "photo discovery",
+    "memorable moments",
+    "image sharing platform",
+    "community engagement",
+    "photo feed",
+    "mobile photography",
+    "social media platform"
+  ],
+  "orientation": "any",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "Capture a Moment",
+      "description": "Quickly capture and share your memorable moments.",
+      "url": "/capture"
+    },
+    {
+      "name": "Explore",
+      "description": "Discover amazing photos shared by the community.",
+      "url": "/explore"
+    },
+    {
+      "name": "Profile",
+      "description": "Access your profile and manage your captures.",
+      "url": "/Profile/profile.html"
+    }
+  ],
+  "web_app_manifest": {
+    "related_applications": [],
+    "platforms": {
+      "ios": null,
+      "android": null
+    }
+  },
+  "categories": ["photography", "social", "lifestyle"],
+  "offline_enabled": true,
+  "splash_screen": {
+    "show": true,
+    "full_screen": true,
+    "background_color": "#FE9063"
+  },
+  "permissions": [
+    "camera",
+    "geolocation"
+  ]
 }

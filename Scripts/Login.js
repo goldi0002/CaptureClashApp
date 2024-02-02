@@ -7,7 +7,6 @@ $(document).on('click','#btnLogin',function(){
         "user_name": $('#txtUserName').val().trim(), 
         "user_password": $('#txtPassword').val().trim()
     };
-
     ajaxRequest(supabase_url() + '/check_user_credentials',
     'POST',
     _loginObj,

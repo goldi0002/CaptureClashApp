@@ -174,3 +174,138 @@ const formatNumber=(value)=> {
       return value.toString();
   }
 }
+
+(function ($) {
+  $.fn.viewTracker = function (options) {
+    var settings = $.extend(
+      {
+        apiUrl: "",
+        offsetPercentage: 50,
+        debounceTime: 200, // Adjust the debounce time as needed
+        viewElem: ""
+      },
+      options
+    );
+    return this.each(function () {
+      var $post = $(this);
+      var viewLogged = false;
+
+      function isElementInCenter(el) {
+        var rect = el.getBoundingClientRect();
+        var centerY = window.innerHeight / 2;
+        return rect.top <= centerY && rect.bottom >= centerY;
+      }
+
+      function logView() {
+        if (!viewLogged && isElementInCenter($post[0])) {
+          var numpartPost = $post.data("post-id").match(/-(\d+)$/);
+          if (numpartPost) {
+            var current_view_post_id = numpartPost[1];
+            var current_view_post_indes=$post.data("post-index");
+            var current_post_view_data={
+              "p_user_id":parseInt($(settings.viewElem + current_view_post_indes).data("logged-user-id")),
+              "p_post_id":parseInt(current_view_post_id),
+              "p_ip_address":$(settings.viewElem + current_view_post_indes).data("p-ip-logged-user-address"),
+              "p_device_type":$(settings.viewElem + current_view_post_indes).data("logged-user-device-type"),
+              "p_browser_info":$(settings.viewElem + current_view_post_indes).data("logged-user-browser-information"),
+              "p_country":"",
+              "p_city":""
+            };
+            ajaxRequest(
+              settings.apiUrl,
+              "POST",
+              current_post_view_data,
+              (resp)=>{
+                if(resp){
+                  var _data = {
+                    is_like: false,
+                    p_post_id: parseInt(current_view_post_id),
+                    is_dislike:false,
+                    is_view:true,
+                    is_comment:false
+                  };
+                  ajaxRequest(
+                    supabase_url()+"/update_post_counts",
+                    "POST",
+                    _data,
+                    (suc)=>{
+                      var current_post_views=suc[0].p_views;
+                      $(settings.viewElem + current_view_post_indes).html(formatNumber(current_post_views));
+                    },(erj)=>{
+                      console.log("error while updating count");
+                    }
+                  );
+                }else{
+                  console.log("post already viewd");
+                }
+              },(rej)=>{
+                console.log("something went wrong: please try again:" + rej);
+              }
+            )
+          }else{
+            console.log("numeric part not found");
+          }
+        }else{
+          console.log("element not in center");
+        }
+      }
+      var debouncedLogView = $.debounce(settings.debounceTime, logView);
+      $(window).on("scroll", function () {
+        debouncedLogView();
+      });
+      logView();
+    });
+  };
+  $.debounce = function (interval, func) {
+      var lastCallTime;
+      return function () {
+          var now = Date.now();
+          if (!lastCallTime || now - lastCallTime >= interval) {
+              lastCallTime = now;
+              func.apply(this, arguments);
+          }
+      };
+  };
+})(jQuery);
+function getBrowserInfo() {
+  var userAgent = navigator.userAgent;
+  var browserName, browserVersion;
+  if (/Chrome/.test(userAgent)) {
+      browserName = 'Google Chrome';
+  } else if (/Firefox/.test(userAgent)) {
+      browserName = 'Mozilla Firefox';
+  } else if (/Safari/.test(userAgent)) {
+      browserName = 'Apple Safari';
+  } else if (/MSIE|Trident/.test(userAgent)) {
+      browserName = 'Internet Explorer';
+  } else {
+      browserName = 'Unknown';
+  }
+  if (/Edge/.test(userAgent)) {
+      browserVersion = userAgent.match(/Edge\/(\S+)/)[1];
+  } else if (/Chrome/.test(userAgent)) {
+      browserVersion = userAgent.match(/Chrome\/(\S+)/)[1];
+  } else if (/Firefox/.test(userAgent)) {
+      browserVersion = userAgent.match(/Firefox\/(\S+)/)[1];
+  } else if (/Safari/.test(userAgent)) {
+      browserVersion = userAgent.match(/Version\/(\S+)/)[1];
+  } else if (/MSIE|Trident/.test(userAgent)) {
+      browserVersion = userAgent.match(/(?:MSIE|rv:)(\S+)/)[1];
+  } else {
+      browserVersion = 'Unknown';
+  }
+  var operatingSystem = navigator.platform;
+  return "BrowserName: " + browserName + ",BrowserVersion:" + browserVersion + ",OperatingSystem: " + operatingSystem + ",UserAgent:" + userAgent;
+}
+function getGreeting() {
+  var currentDate = new Date();
+  var currentHour = currentDate.getHours();
+
+  if (currentHour >= 5 && currentHour < 12) {
+      return "Good morning!";
+  } else if (currentHour >= 12 && currentHour < 18) {
+      return "Good afternoon!";
+  } else {
+      return "Good evening!";
+  }
+}

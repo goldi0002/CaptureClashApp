@@ -84,7 +84,15 @@ function dzThemeSettings()
 	
 })(jQuery);
 
-
+$(document).ready(function(){
+	function getClientIp() {
+		$.getJSON("https://api.ipify.org?format=json", function(data) {
+			var ip = data.ip;
+			window.localStorage.setItem("ipAddress",ip);
+		});
+	}
+	getClientIp();
+});
 /* Cookies Function */
 function setCookie(cname, cvalue, exhours) 
 {
