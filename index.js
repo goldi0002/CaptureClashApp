@@ -4,13 +4,9 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
         navigator.serviceWorker.register('app.js')
             .then(registration => {
                 console.log('Service Worker registered with scope:', registration.scope);
-
-                // Check if the user has granted permission for notifications
                 Notification.requestPermission().then(permission => {
                     if (permission === 'granted') {
-                        // The user has granted permission
                         showNotification(registration);
-						
                     } else {
                         console.warn('Notification permission not granted');
                     }

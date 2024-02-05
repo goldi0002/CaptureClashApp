@@ -97,7 +97,7 @@
     }
   },
   "categories": ["photography", "social", "lifestyle"],
-  "offline_enabled": true,
+  "offline_enabled": false,
   "splash_screen": {
     "show": true,
     "full_screen": true,
