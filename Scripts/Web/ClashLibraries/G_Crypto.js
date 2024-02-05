@@ -52,6 +52,9 @@ const ajaxRequest = (url, method, data, successCallback, errorCallback, key) => 
 const supabase_url=()=>{
    return "https://ytbdhqwafvmhaucvkfwa.supabase.co/rest/v1/rpc";
 }
+const supabase_KEY=()=>{
+  return supabase_key;
+}
 const showLoader=(timeout)=>{
   if(timeout){
     jQuery('#preloader').fadeOut(timeout);
@@ -311,4 +314,20 @@ function getGreeting() {
   } else {
       return "Good evening!";
   }
+}
+const getDecryptQueryStringParameter = (paramName) => {
+  var queryString = window.location.href.split('?')[1];
+  if (queryString) {
+    var params = queryString.split('&');
+    for (var i = 0; i < params.length; i++) {
+      var param = params[i].split('=');
+      if (param[0] === paramName) {
+        return G_Crypto.decrypt(param[1]);
+      }
+    }
+    console.error(`Parameter "${paramName}" not found in the query string.`);
+    return null; // Handle parameter not found as needed
+  }
+  console.error("No query string found.");
+  return null; // Handle no query string as needed
 }

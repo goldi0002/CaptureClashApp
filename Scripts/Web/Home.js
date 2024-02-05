@@ -38,8 +38,10 @@ const HomeScriptFeature={
             if (numericPart) {
               var extractedNumber = numericPart[1];
               var _like_data={
-                  p_post_id:parseInt(extractedNumber),
-                  p_user_id: parseInt(getSessionData("USER_ID"))
+                  p_resource_seq:parseInt(extractedNumber),
+                  p_user_id: parseInt(getSessionData("USER_ID")),
+                  p_resource_type:'POST',
+                  p_post_seq:null
               }
               ajaxRequest(
                supabase_url() +"/save_or_update_like",
@@ -47,6 +49,7 @@ const HomeScriptFeature={
                _like_data,
                (succ)=>{
                   if(succ ==="deleted" || succ ==="inserted" ){
+                     
                      var _data = {
                        is_like: succ === "inserted" ? true : false,
                        p_post_id: parseInt(extractedNumber),
@@ -90,7 +93,10 @@ const HomeScriptFeature={
          ajaxRequest(
             supabase_url() +"/get_liked_post_ids",
             "POST",
-            {"p_user_id":parseInt(getSessionData("USER_ID"))},
+            {
+               "p_user_id":parseInt(getSessionData("USER_ID")),
+               "p_resource_type":"POST"
+            },
             (success)=>{
                if(success){
                   my_liked_post=success;
