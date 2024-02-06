@@ -9,38 +9,98 @@ new Vue({
     likesCountRefs: {},
     activeCommentSeqs: [],
     showChild: {},
+    typingLogId: null,
+    typingTimeout: null,
+    isTyping: false,
+    whoIStyping:[],
+  },
+  computed: {
+    htmlOfTyping() {
+      // Customize the HTML based on the user's typing status
+      // return this.isTyping ? `<p>${getSessionData("USER_FL_NAME")} is typing....</p>` : '';
+    },
   },
   methods: {
-    pushNewCommentInExisingComments(is_commentReply){
-      if(!is_commentReply){
-        const newComment = {
-          comment_text: this.newCommentText,
-          comment_seq: null,
-          user_id: parseInt(getSessionData("USER_ID")),
-          parent_comment_id: null,
-          likes_count:0,
-          user_name:getSessionData("USER_NAME"),
-          child_comments:[]
-        };
-        this.$set(this.comments, this.comments.length, newComment);
-        
-      }else{
-        const newComment = {
-          comment_text: this.newCommentText,
-          comment_seq: null,
-          user_id: parseInt(getSessionData("USER_ID")),
-          parent_comment_id: parseInt(this.replyParentCommentSeq),
-          likes_count:0,
-          user_name:getSessionData("USER_NAME"),
-          child_comments:[]
-        };
-        this.comments.forEach((comment) => {
-          if (comment.comment_seq === this.replyParentCommentSeq) {
-              this.$set(comment.child_comments, comment.child_comments.length, newComment);
+    pushNewCommentInExisingComments(is_commentReply) {
+      const _get_last_Comment = {
+        _post_id: parseInt(getDecryptQueryStringParameter("cmt").split("=")[1]),
+        _user_id: parseInt(getSessionData("USER_ID")),
+      };
+    
+      const headers = {
+        Authorization: "Bearer " + supabase_KEY(),
+        apikey: supabase_KEY(),
+        "Content-Type": "application/json",
+      };
+    
+      const getCommentsUrl = supabase_url() + "/get_last_comment_by_post_and_user";
+    
+      const updateCommentArray = (targetArray, newItem) => {
+        const existingIndex = targetArray.findIndex(comment => comment.comment_seq === newItem.comment_seq);
+        if (existingIndex !== -1) {
+          targetArray.splice(existingIndex, 1);
+        }
+        targetArray.push(newItem);
+      };
+    
+      const fetchNewComments = () => {
+        axios.post(getCommentsUrl, _get_last_Comment, { headers }).then((response) => {
+          const newComment = response.data;
+          const commentExists = this.comments.some(comment => comment.comment_seq === newComment.comment_seq);
+          if(commentExists){
+             fetchNewComments();
+          }else{
+          if (!is_commentReply) {
+            updateCommentArray(this.comments, {
+              ...newComment,
+              child_comments: Array.isArray(newComment.child_comments) ? newComment.child_comments : [],
+            });
+          } else {
+            const parentComment = this.comments.find(comment => comment.comment_seq === this.replyParentCommentSeq);
+    
+            if (parentComment) {
+              updateCommentArray(parentComment.child_comments || [], {
+                ...newComment,
+                child_comments: Array.isArray(newComment.child_comments) ? newComment.child_comments : [],
+              });
+            }
           }
+          if (!commentExists) {
+            return;
+          }
+          fetchNewComments();
+         }
+        }).catch((error) => {
+          console.log(error);
         });
-      }    
+      };
+      fetchNewComments();
     },
+    getTypingLogs() {
+      const getTypingLogsUrl = supabase_url() + "/get_typing_logs_by_resource_seq";
+      const headers = {
+        Authorization: "Bearer " + supabase_KEY(),
+        apikey: supabase_KEY(),
+      };
+      const _typing_log_data = {
+        p_resource_seq: parseInt(getDecryptQueryStringParameter("cmt").split("=")[1]),
+        p_resource_type: "POST",
+      };
+    
+      const fetchNewTypingLogs = () => {
+        axios.post(getTypingLogsUrl, _typing_log_data, { headers }).then((response) => {
+          const typingLogs = response.data;
+          this.whoIStyping = [];
+          if (typingLogs.length > 0) {
+            this.whoIStyping = typingLogs.filter((typingLog) => typingLog.p_user_id !== parseInt(getSessionData("USER_ID")));
+          }
+          this.typingTimeout = setTimeout(fetchNewTypingLogs, 1000);
+        }).catch((error) => {
+          console.log(error);
+        });
+      };
+      fetchNewTypingLogs();
+    },    
     async submitComment() {
       const postCommentUrl = supabase_url() + "/update_or_save_comment";
       const headers = {
@@ -237,15 +297,70 @@ new Vue({
             ...comment,
             child_comments: comment.child_comments || [],
           }));
-          console.log(this.comments);
         })
         .catch((error) => {
           console.error("Error fetching comments:", error);
         });
     },
+    saveTypingLogs() {
+      const saveTypingLogsUrl = supabase_url() + "/save_typing_log";
+      const headers = {
+        Authorization: "Bearer " + supabase_KEY(),
+        apikey: supabase_KEY(),
+      };
+    
+      const _typing_log_data = {
+        p_user_id: parseInt(getSessionData("USER_ID")),
+        p_resource_seq: parseInt(getDecryptQueryStringParameter("cmt").split("=")[1]),
+        p_resource_type: "POST",
+        p_log_message: getSessionData("USER_FL_NAME") + " " + "is typing....",
+      };
+    
+      axios
+        .post(saveTypingLogsUrl, _typing_log_data, { headers })
+        .then((response) => {
+          this.typingLogId = response.data;
+          this.isTyping = false;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    deleteTypingLog() {
+      if (this.typingLogId) {
+        const deleteTypingLogUrl = `${supabase_url()}/delete_typing_log`;
+        const headers = {
+          Authorization: "Bearer " + supabase_KEY(),
+          apikey: supabase_KEY(),
+        };
+        const _ld={
+          p_typing_logs_seq:parseInt(this.typingLogId)
+        };
+
+        axios
+          .post(deleteTypingLogUrl,_ld, { headers })
+          .then(() => {
+            console.log("Typing log deleted");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    startTyping() {
+      if (!this.isTyping) {
+        this.saveTypingLogs();
+      }
+    },
+    stopTyping() {
+      clearTimeout(this.typingTimeout);
+      this.deleteTypingLog();
+      this.isTyping = false;
+    },    
   },
   mounted() {
     this.getComments();
+    this.getTypingLogs()
     this.my_liked_comments();
   },
 });

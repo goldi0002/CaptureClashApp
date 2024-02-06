@@ -64,7 +64,7 @@
 						  <li class="text-light" @click="replyCommentByCommentSeq(comment.comment_seq)" style="cursor: pointer;">Reply</li>
 						  <li class="text-light"  @click="showChildComments(comment.comment_seq)" :style="{ display: comment.child_comments.length === 0 ? 'none' : 'flex' }">
 							<a href="javascript:void(0);">
-							{{ comment.child_comments.length === 1 ? "1 Reply" : comment.child_comments.length + " Replies" }}
+							{{ comment.child_comments.length === 1 ? "1 Reply" : comment.child_comments.length  + " Replies" }}
 						  </a>
 						 </li>
 						</ul>
@@ -121,8 +121,20 @@
 					</template>
 				  </template>
 				</template>
-			  </ul>								  
-		</div>		
+			  </ul>	
+			  <ul class="dz-comments-list" :style="">
+				<template v-for="whoTyping in whoIStyping" :key="whoTyping.p_typing_logs_seq">
+					<li>
+						<div class="list-content">
+							<img src="/assets/images/message/pic2.jpg" alt="User Image">
+							<div>
+							<p class="mb-2">{{whoTyping.p_log_message}}</p>
+							</div>
+						</div>
+					</li>
+			   </template>
+			  </ul>							  
+		</div>
     </div>
 		<footer class="footer fixed border-top">
         <div class="container py-2">
@@ -131,8 +143,8 @@
 					<div class="media media-40 rounded-circle">
 						<img src="/assets/images/stories/small/pic1.jpg" alt="/">
 					</div>
-					<form class="flex-1" @submit.prevent="submitComment">
-                        <input type="text" class="form-control" v-model="newCommentText" placeholder="Add a Comment..." ref="commentInput"/>
+					<form class="flex-1"  @submit.prevent="submitComment" >
+                        <input type="text" class="form-control" v-model="newCommentText" @focus="startTyping" @blur="stopTyping" placeholder="Add a Comment..." ref="commentInput"/>
                     </form>
 				</div>
 				<a href="javascript:void(0);" class="send-btn" id="newcommentsendbtn" @click="submitComment">
